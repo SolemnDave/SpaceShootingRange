@@ -1,4 +1,4 @@
-import pygame, sys, random
+import pygame, sys, random, os
 
 
 
@@ -7,7 +7,7 @@ class Crosshair (pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load(picture_path)
         self.rect = self.image.get_rect()
-        self.gunshot = pygame.mixer.Sound("gunshot.wav")
+        self.gunshot = pygame.mixer.Sound((os.path.join("assets","gunshot.wav")))
     def shoot(self):
         self.gunshot.play()
         pygame.sprite.spritecollide(crosshair, target_group, True)
@@ -32,7 +32,7 @@ class Liluzi (pygame.sprite.Sprite):
 class GameState():
     def __init__(self):
         self.state = 'intro'
-        self.intromus = pygame.mixer.Sound("lil-uzi-vert-space-cadet-By-Tuna.mp3")
+        self.intromus = pygame.mixer.Sound((os.path.join("assets","lil-uzi-vert-glock-in-my-purse-By-Tuna.mp3")))
 
     def intro(self):
         for event in pygame.event.get():
@@ -89,18 +89,18 @@ game_state = GameState()
 screen_width = 1280
 screen_height = 720
 screen = pygame.display.set_mode((screen_width, screen_height))
-background = pygame.image.load("LilUziSpace.png")
-ready_text = pygame.image.load("ready_text.jpeg")
+background = pygame.image.load((os.path.join("assets","LilUziSpace.png")))
+ready_text = pygame.image.load((os.path.join("assets","ready_text.jpeg")))
 pygame.mouse.set_visible(False)
 
-liluzi = Liluzi("Lil-Uzi.jpeg", 1180, 620)
+liluzi = Liluzi((os.path.join("assets","Lil-Uzi.jpeg")), 1180, 620)
 liluzi_group = pygame.sprite.Group()
 liluzi_group.add(liluzi)
 
 
 # Crosshair
 
-crosshair = Crosshair("crosshair.png")
+crosshair = Crosshair((os.path.join("assets","crosshair.png")))
 crosshair_group = pygame.sprite.Group()
 crosshair_group.add(crosshair)
 
@@ -108,7 +108,7 @@ crosshair_group.add(crosshair)
 
 target_group = pygame.sprite.Group()
 for target in range(20):
-    new_target = Target("target.png", random.randrange(0, screen_width), random.randrange(0, screen_height))
+    new_target = Target((os.path.join("assets","target.png")), random.randrange(0, screen_width), random.randrange(0, screen_height))
     target_group.add(new_target)
 
 while True:
