@@ -28,10 +28,61 @@ class Liluzi (pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = [pos_x, pos_y]
 
+
+class GameState():
+    def __init__(self):
+        self.state = 'intro'
+        self.intromus = pygame.mixer.Sound("lil-uzi-vert-space-cadet-By-Tuna.mp3")
+
+    def intro(self):
+        for event in pygame.event.get():
+            self.intromus.play()
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.intromus.stop()
+                self.state = 'main_game'
+
+        # Drawing
+        screen.blit(background, (0, 0))
+        screen.blit(ready_text,(screen_width/2 - 140, screen_height/2 - 70))
+        crosshair_group.draw(screen)
+        crosshair_group.update()
+        liluzi_group.draw(screen)
+
+        pygame.display.flip()
+
+
+    def main_game(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                crosshair.shoot()
+
+        # Drawing
+        screen.blit(background, (0, 0))
+        target_group.draw(screen)
+        crosshair_group.draw(screen)
+        crosshair_group.update()
+        liluzi_group.draw(screen)
+
+        pygame.display.flip()
+
+    def state_manager(self):
+        if self.state == 'intro':
+            self.intro()
+        if self.state == 'main_game':
+            self.main_game()
+
+
 # General Setup
 
 pygame.init()
 clock = pygame.time.Clock()
+game_state = GameState()
 
 # Game Screen
 
@@ -39,9 +90,10 @@ screen_width = 1280
 screen_height = 720
 screen = pygame.display.set_mode((screen_width, screen_height))
 background = pygame.image.load("LilUziSpace.png")
+ready_text = pygame.image.load("ready_text.jpeg")
 pygame.mouse.set_visible(False)
 
-liluzi = Liluzi("Lil-Uzi.png", 1180, 620)
+liluzi = Liluzi("Lil-Uzi.jpeg", 1180, 620)
 liluzi_group = pygame.sprite.Group()
 liluzi_group.add(liluzi)
 
@@ -60,19 +112,7 @@ for target in range(20):
     target_group.add(new_target)
 
 while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            crosshair.shoot()
-
-    pygame.display.flip()
-    screen.blit(background, (0,0))
-    target_group.draw(screen)
-    crosshair_group.draw(screen)
-    crosshair_group.update()
-    liluzi_group.draw(screen)
+    game_state.state_manager()
     clock.tick(60)
 
 
